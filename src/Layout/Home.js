@@ -7,23 +7,31 @@ import NotFound from "./NotFound";
 
 const Home = () => {
   const [decks, setDecks] = useState([]);
+  const [singleDeck, setSingleDeck] = useState({});
   const [error, setError] = useState(undefined);
 
   useEffect(() => {
     const abortController = new AbortController();
     const signal = abortController.signal;
 
-    listDecks(signal).then(setDecks).catch(setError);
+    listDecks(signal)
+      .then(setDecks)
+      .catch((error) => console.log(error));
 
     return () => abortController.abort();
   }, []);
   return (
     <Switch>
       <Route path="/decks">
-        <DecksNav setDecks={setDecks} decks={decks} />
+        <DecksNav setDecks={setDecks} decks={decks} singleDeck={singleDeck} />
       </Route>
       <Route exact path="/">
-        <DeckList setDecks={setDecks} decks={decks} />
+        <DeckList
+          setDecks={setDecks}
+          decks={decks}
+          setSingleDeck={setSingleDeck}
+          singleDeck={singleDeck}
+        />
       </Route>
       <Route>
         <NotFound />

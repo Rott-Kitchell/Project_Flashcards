@@ -1,15 +1,33 @@
-import React, { useState } from "react";
-import { Route, Switch, useHistory, useRouteMatch } from "react-router";
+import React, { useEffect, useState } from "react";
+import {
+  Route,
+  Switch,
+  useHistory,
+  useParams,
+  useRouteMatch,
+} from "react-router";
 import Breadcrumbs from "./Breadcrumbs";
 import CreateDeck from "./CreateDeck";
 
 import Study from "./Study";
 import Deck from "./Deck";
+import { readDeck } from "../../utils/api";
 
 function DecksNav({ decks, setDecks }) {
+  const { deckId } = useParams();
+  console.log(deckId);
   const [cards, setCards] = useState([]);
   const [singleDeck, setSingleDeck] = useState({});
   const { location } = useHistory();
+  useEffect(() => {
+    const abortController = new AbortController();
+
+    readDeck(deckId)
+      .then(setSingleDeck)
+      .catch((error) => console.log(error));
+
+    return abortController.abort();
+  }, []);
 
   const { path } = useRouteMatch();
 

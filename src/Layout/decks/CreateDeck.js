@@ -13,10 +13,7 @@ function CreateDeck({ isnew, decks, singleDeck, setSingleDeck }) {
   const [formData, setFormData] = useState(initialFormState);
 
   useEffect(() => {
-    const abortController = new AbortController();
-    const signal = abortController.signal;
     if (!isnew) {
-      readDeck(deckId, signal).then(setSingleDeck);
       setFormData((currentForm) => {
         return {
           ...currentForm,
@@ -26,8 +23,8 @@ function CreateDeck({ isnew, decks, singleDeck, setSingleDeck }) {
       });
     }
 
-    return () => abortController.abort();
-  }, [singleDeck]);
+    
+  });
 
   let placeholders = {
     heading: "",

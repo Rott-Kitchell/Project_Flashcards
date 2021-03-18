@@ -58,6 +58,7 @@ async function fetchJson(url, options) {
  *  a promise that resolves to a possibly empty array of decks saved in the database.
  */
 export async function listDecks(signal) {
+  console.log("inside list");
   const url = `${API_BASE_URL}/decks?_embed=cards`;
   return await fetchJson(url, { signal });
 }
@@ -93,6 +94,7 @@ export async function createDeck(deck, signal) {
  *  a promise that resolves to the saved deck.
  */
 export async function readDeck(deckId, signal) {
+  console.log("inside read");
   const url = `${API_BASE_URL}/decks/${deckId}?_embed=cards`;
   return await fetchJson(url, { signal });
 }
@@ -107,6 +109,7 @@ export async function readDeck(deckId, signal) {
  *  a promise that resolves to the updated deck.
  */
 export async function updateDeck(updatedDeck, signal) {
+  console.log("inside update");
   const url = `${API_BASE_URL}/decks/${updatedDeck.id}?_embed=cards`;
   const options = {
     method: "PUT",

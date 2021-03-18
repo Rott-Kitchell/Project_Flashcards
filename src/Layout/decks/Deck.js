@@ -9,9 +9,9 @@ function Deck({ cards, setCards, singleDeck, setSingleDeck }) {
 
   useEffect(() => {
     const abortController = new AbortController();
-
-    readDeck(deckId).then(setSingleDeck);
-    listCards(deckId).then(setCards);
+    listCards(deckId)
+      .then(setCards)
+      .catch((error) => console.log(error));
 
     return abortController.abort();
   }, [deckId, setCards, setSingleDeck]);

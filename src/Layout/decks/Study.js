@@ -9,14 +9,18 @@ function Study({ cards, singleDeck, setSingleDeck, setCards }) {
     const abortController = new AbortController();
     const signal = abortController.signal;
     if (deckId) {
-      readDeck(deckId, signal).then(setSingleDeck);
-      listCards(deckId).then(setCards);
+      readDeck(deckId, signal)
+        .then(setSingleDeck)
+        .catch((error) => console.log(error));
+      listCards(deckId)
+        .then(setCards)
+        .catch((error) => console.log(error));
     }
 
     return () => abortController.abort();
   }, [deckId]);
 
-  const cardIds = cards.map((card) => card.id);
+  //const cardIds = cards.map((card) => card.id);
 
   return (
     <div>

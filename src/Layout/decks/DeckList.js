@@ -3,6 +3,25 @@ import { Link } from "react-router-dom";
 import { deleteDeck } from "../../utils/api";
 
 const DeckList = ({ setDecks, decks }) => {
+// const DeckList = ({ setDecks, decks, setSingleDeck }) => {
+//   function useHandleClick(event, id) {
+//     event.preventDefault();
+    
+//     useEffect(() => {
+//       if (event.target.innerText === "Delete") {
+//         const result = window.confirm(
+//           "Are you sure you want to delete this post?"
+//         );
+//         if (result) {
+//           deleteDeck(id).then(setDecks());
+//         }
+//       } else {
+//         setSingleDeck({});
+//         readDeck(id).then.name(setSingleDeck);
+//       }
+//     }, [id]);
+//   }
+
   const handleDelete = (event, id) => {
     event.preventDefault();
 
