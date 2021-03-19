@@ -6,14 +6,16 @@ import { createDeck, readDeck, updateDeck } from "../../utils/api";
 function CreateDeck({ isnew, decks, singleDeck, setSingleDeck }) {
   const history = useHistory();
   const { deckId } = useParams();
-  const initialFormState = {
-    name: "",
-    description: "",
+  
+  let initialFormState = {
+    name: undefined,
+    description: undefined,
   };
   const [formData, setFormData] = useState(initialFormState);
 
   useEffect(() => {
     if (!isnew) {
+      readDeck(deckId).then(setSingleDeck)
       setFormData((currentForm) => {
         return {
           ...currentForm,
@@ -24,7 +26,7 @@ function CreateDeck({ isnew, decks, singleDeck, setSingleDeck }) {
     }
 
     
-  });
+  }, [deckId, isnew, setSingleDeck, singleDeck.description, singleDeck.name]);
 
   let placeholders = {
     heading: "",
@@ -48,8 +50,11 @@ function CreateDeck({ isnew, decks, singleDeck, setSingleDeck }) {
 
     handleSubmit = (event) => {
       event.preventDefault();
-      setFormData({ ...initialFormState });
-      createDeck(formData).then(({ id }) => history.push(`/decks/${id}`));
+      
+      createDeck(formData)
+      .then(setFormData({ ...initialFormState }))
+      .then(setSingleDeck((origDeck) => {return {...origDeck, formData}}))
+      .then(({ id }) => history.push(`/decks/${id}`));
     };
   } else {
     if (singleDeck) {

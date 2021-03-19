@@ -15,19 +15,19 @@ import { readDeck } from "../../utils/api";
 
 function DecksNav({ decks, setDecks }) {
   const { deckId } = useParams();
-  console.log(deckId);
+  
   const [cards, setCards] = useState([]);
   const [singleDeck, setSingleDeck] = useState({});
   const { location } = useHistory();
-  useEffect(() => {
-    const abortController = new AbortController();
+  // useEffect(() => {
+  //   const abortController = new AbortController();
 
-    readDeck(deckId)
-      .then(setSingleDeck)
-      .catch((error) => console.log(error));
+  //   readDeck(deckId)
+  //     .then(setSingleDeck)
+  //     .catch((error) => console.log(error));
 
-    return abortController.abort();
-  }, []);
+  //   return abortController.abort();
+  // }, [deckId]);
 
   const { path } = useRouteMatch();
 

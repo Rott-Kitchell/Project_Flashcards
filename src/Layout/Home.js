@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Switch, Route } from "react-router-dom";
-import { listDecks } from "../utils/api";
+import { listDecks, readDeck } from "../utils/api";
 import DeckList from "./decks/DeckList";
 import DecksNav from "./decks/DecksNav";
 import NotFound from "./NotFound";
 
 const Home = () => {
+  const [deckNum, setDeckNum] = useState();
   const [decks, setDecks] = useState([]);
   const [singleDeck, setSingleDeck] = useState({});
-  const [error, setError] = useState(undefined);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -20,6 +20,14 @@ const Home = () => {
 
     return () => abortController.abort();
   }, []);
+
+  useEffect(() => {
+    if (deckNum) {
+      readDeck(deckNum)
+        .then(setSingleDeck)
+        .catch((error) => console.log(error));
+    }
+  }, [deckNum]);
   return (
     <Switch>
       <Route path="/decks">
@@ -31,6 +39,7 @@ const Home = () => {
           decks={decks}
           setSingleDeck={setSingleDeck}
           singleDeck={singleDeck}
+          setDeckNum={setDeckNum}
         />
       </Route>
       <Route>

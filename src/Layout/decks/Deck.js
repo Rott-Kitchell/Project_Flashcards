@@ -6,6 +6,15 @@ import { listCards, readDeck } from "../../utils/api";
 function Deck({ cards, setCards, singleDeck, setSingleDeck }) {
   const { deckId } = useParams();
   const { url } = useRouteMatch();
+  useEffect(() => {
+    const abortController = new AbortController();
+
+    readDeck(deckId)
+      .then(setSingleDeck)
+      .catch((error) => console.log(error));
+
+    return abortController.abort();
+  }, [deckId, setSingleDeck]);
 
   useEffect(() => {
     const abortController = new AbortController();
