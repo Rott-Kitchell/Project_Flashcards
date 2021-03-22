@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router";
 import { Link } from "react-router-dom";
-import { createDeck, readDeck, updateDeck } from "../../utils/api";
+import { createDeck, readDeck, updateDeck } from "../../../utils/api";
 
-function CreateDeck({ isnew, singleDeck, setSingleDeck }) {
+function AddEditDeck({ isnew, singleDeck, setSingleDeck }) {
   let initialFormState = {
     name: "",
     description: "",
@@ -126,4 +126,4 @@ function CreateDeck({ isnew, singleDeck, setSingleDeck }) {
   );
 }
 
-export default CreateDeck;
+export default AddEditDeck;

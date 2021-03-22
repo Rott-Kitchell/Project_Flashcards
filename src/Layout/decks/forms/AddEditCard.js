@@ -3,7 +3,7 @@ import { useHistory, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { createCard, readCard, readDeck, updateCard } from "../../../utils/api";
 
-function AddCard({ singleDeck, isnew, setSingleDeck }) {
+function AddEditCard({ singleDeck, isnew, setSingleDeck }) {
   const history = useHistory();
   let initialCardState = {
     front: "",
@@ -57,7 +57,8 @@ function AddCard({ singleDeck, isnew, setSingleDeck }) {
       createCard(params.deckId, formData)
         .then(setFormData({ ...initialCardState }))
 
-        .then(history.push(`/decks/${params.deckId}`));
+        .then(history.push(`/decks/${params.deckId}`))
+        .catch((error) => console.log(error));
     };
   } else {
     if (cardData) {
@@ -70,7 +71,9 @@ function AddCard({ singleDeck, isnew, setSingleDeck }) {
     handleSubmit = (event) => {
       event.preventDefault();
 
-      updateCard(formData).then(history.push(`/decks/${params.deckId}`));
+      updateCard(formData)
+        .then(history.push(`/decks/${params.deckId}`))
+        .catch((error) => console.log(error));
     };
   }
   return (
@@ -117,4 +120,4 @@ function AddCard({ singleDeck, isnew, setSingleDeck }) {
   );
 }
 
-export default AddCard;
+export default AddEditCard;

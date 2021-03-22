@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router";
 import Breadcrumbs from "./Breadcrumbs";
-import CreateDeck from "./CreateDeck";
-import AddCard from "./cards/AddCard";
+import AddEditDeck from "./forms/AddEditDeck";
+import AddEditCard from "./forms/AddEditCard";
 
 import Study from "./Study";
-import Deck from "./Deck";
+import Deck from "./ViewDeck";
 
 function DecksNav({ decks, setDecks }) {
-  const [cards, setCards] = useState([]);
+  const [cardsList, setCardsList] = useState([]);
   const [singleDeck, setSingleDeck] = useState({});
   const { location } = useHistory();
 
@@ -19,7 +19,7 @@ function DecksNav({ decks, setDecks }) {
       <Breadcrumbs location={location} singleDeck={singleDeck} />
       <Switch>
         <Route exact path={`${path}/new`}>
-          <CreateDeck
+          <AddEditDeck
             isnew={true}
             decks={decks}
             singleDeck={singleDeck}
@@ -27,7 +27,7 @@ function DecksNav({ decks, setDecks }) {
           />
         </Route>
         <Route exact path={`${path}/:deckId/edit`}>
-          <CreateDeck
+          <AddEditDeck
             isnew={false}
             decks={decks}
             singleDeck={singleDeck}
@@ -36,29 +36,29 @@ function DecksNav({ decks, setDecks }) {
         </Route>
         <Route exact path={`${path}/:deckId/study`}>
           <Study
-            cards={cards}
-            setCards={setCards}
+            cardsList={cardsList}
+            setCardsList={setCardsList}
             singleDeck={singleDeck}
             setSingleDeck={setSingleDeck}
           />
         </Route>
         <Route exact path={`${path}/:deckId`}>
           <Deck
-            cards={cards}
-            setCards={setCards}
+            cards={cardsList}
+            setCards={setCardsList}
             singleDeck={singleDeck}
             setSingleDeck={setSingleDeck}
           />
         </Route>
         <Route exact path={`${path}/:deckId/cards/new`}>
-          <AddCard
+          <AddEditCard
             singleDeck={singleDeck}
             isnew={true}
             setSingleDeck={setSingleDeck}
           />
         </Route>
         <Route exact path={`${path}/:deckId/cards/:cardId/edit`}>
-          <AddCard
+          <AddEditCard
             singleDeck={singleDeck}
             isnew={false}
             setSingleDeck={setSingleDeck}

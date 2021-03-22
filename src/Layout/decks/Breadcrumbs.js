@@ -17,7 +17,7 @@ function Breadcrumb({ location, singleDeck }) {
   } else if (path[1] === "study") {
     breadcrumbPath[1] = "Study";
   } else if (path[1] === "cards")
-    if (path[3] === "new") {
+    if (path[2] === "new") {
       breadcrumbPath[1] = "Add Card";
     } else if (path[3] === "edit") {
       breadcrumbPath[1] = `Edit Card ${path[2]}`;

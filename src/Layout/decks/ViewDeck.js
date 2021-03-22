@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useHistory, useParams, useRouteMatch } from "react-router";
 import { Link } from "react-router-dom";
-import { deleteCard, deleteDeck, listCards, readDeck } from "../../utils/api";
+import { deleteCard, deleteDeck, readDeck } from "../../utils/api";
 
 function Deck({ cards, setCards, singleDeck, setSingleDeck }) {
   const history = useHistory();
@@ -19,12 +19,12 @@ function Deck({ cards, setCards, singleDeck, setSingleDeck }) {
 
   useEffect(() => {
     const abortController = new AbortController();
-    listCards(singleDeck.id)
-      .then(setCards)
-      .catch((error) => console.log(error));
 
+    if (singleDeck.cards) {
+      setCards(singleDeck.cards);
+    }
     return abortController.abort();
-  }, [deckId, setCards, setSingleDeck, singleDeck.id]);
+  }, [deckId, setCards, singleDeck]);
   const handleDelete = (id, card) => {
     if (card) {
       let result = window.confirm(

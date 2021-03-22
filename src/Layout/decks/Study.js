@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { listCards, readDeck } from "../../utils/api";
+import { readDeck } from "../../utils/api";
 import { Link, useHistory } from "react-router-dom";
 
-function Study({ cards, singleDeck, setSingleDeck, setCards }) {
+function Study({ cardsList, singleDeck, setSingleDeck, setCardsList }) {
   const { deckId } = useParams();
   const history = useHistory();
 
@@ -13,7 +13,6 @@ function Study({ cards, singleDeck, setSingleDeck, setCards }) {
   };
   let [cardData, setCardData] = useState(initCardState);
   let cardText = "";
-  let displaySide = cardData.frontOfCard ? "none" : "block";
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -27,12 +26,12 @@ function Study({ cards, singleDeck, setSingleDeck, setCards }) {
 
   useEffect(() => {
     const abortController = new AbortController();
-    listCards(deckId)
-      .then(setCards)
-      .catch((error) => console.log(error));
 
+    if (singleDeck.cards) {
+      setCardsList(singleDeck.cards);
+    }
     return abortController.abort();
-  }, [deckId, setCards, setSingleDeck]);
+  }, [deckId, setCardsList, singleDeck]);
 
   const handleFlip = (event) => {
     event.preventDefault();
@@ -45,7 +44,7 @@ function Study({ cards, singleDeck, setSingleDeck, setCards }) {
   };
   const handleNext = (event) => {
     event.preventDefault();
-    if (cardData.index + 1 === cards.length) {
+    if (cardData.index + 1 === cardsList.length) {
       let result = window.confirm(
         "Restart cards? \n \n Click 'cancel' to return to the home page"
       );
@@ -65,20 +64,20 @@ function Study({ cards, singleDeck, setSingleDeck, setCards }) {
     }
   };
 
-  if (cards.length !== 0) {
+  if (cardsList.length !== 0) {
     cardData.frontOfCard
-      ? (cardText = cards[cardData.index].front)
-      : (cardText = cards[cardData.index].back);
+      ? (cardText = cardsList[cardData.index].front)
+      : (cardText = cardsList[cardData.index].back);
   }
   return (
     <div>
       <h2 className="mb-2">{singleDeck.name}: Study</h2>
-      {cards.length < 3 ? (
+      {cardsList.length < 3 ? (
         <div>
           <h3>Not enough cards</h3>
           <p>
-            You need at least 3 cards to study. There are {cards.length} cards
-            in this deck.
+            You need at least 3 cards to study. There are {cardsList.length}{" "}
+            cards in this deck.
           </p>
           <Link to="cards/new" className="btn btn-primary">
             <i className="bi bi-plus-square"></i> Add Cards
@@ -88,7 +87,7 @@ function Study({ cards, singleDeck, setSingleDeck, setCards }) {
         <div className="card">
           <div className="card-body">
             <div className="card-title">
-              Card {cardData.index + 1} of {cards.length}
+              Card {cardData.index + 1} of {cardsList.length}
             </div>
             <div className="card-text">{cardText}</div>
             <div className="row">
@@ -98,13 +97,13 @@ function Study({ cards, singleDeck, setSingleDeck, setCards }) {
               >
                 <i className="bi bi-arrow-repeat"></i> Flip
               </button>
-              <button
-                className="btn btn-primary mt-3"
-                style={{ display: `${displaySide}` }}
-                onClick={handleNext}
-              >
-                <i className="bi bi-arrow-right-square"></i> Next
-              </button>
+              {!cardData.frontOfCard ? (
+                <button className="btn btn-primary mt-3" onClick={handleNext}>
+                  <i className="bi bi-arrow-right-square"></i> Next
+                </button>
+              ) : (
+                <Fragment />
+              )}
             </div>
           </div>
         </div>
