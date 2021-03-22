@@ -3,36 +3,39 @@ import { useHistory, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { createDeck, readDeck, updateDeck } from "../../utils/api";
 
-function CreateDeck({ isnew, decks, singleDeck, setSingleDeck }) {
+function CreateDeck({ isnew, singleDeck, setSingleDeck }) {
+  let initialFormState = {
+    name: "",
+    description: "",
+  };
   const history = useHistory();
   const { deckId } = useParams();
-  
-  let initialFormState = {
-    name: undefined,
-    description: undefined,
-  };
   const [formData, setFormData] = useState(initialFormState);
-
   useEffect(() => {
     if (!isnew) {
-      readDeck(deckId).then(setSingleDeck)
-      setFormData((currentForm) => {
+      readDeck(deckId)
+        .then((thisDeck) => {
+          return setSingleDeck((origDeck) => {
+            return { ...origDeck, ...thisDeck };
+          });
+        })
+
+        .catch((error) => console.log(error));
+      setFormData((origForm) => {
         return {
-          ...currentForm,
+          ...origForm,
           name: singleDeck.name,
           description: singleDeck.description,
         };
       });
     }
-
-    
   }, [deckId, isnew, setSingleDeck, singleDeck.description, singleDeck.name]);
-
   let placeholders = {
     heading: "",
     name: "",
     description: "",
   };
+
   let handleSubmit;
   const handleChange = ({ target }) => {
     setFormData({
@@ -50,11 +53,15 @@ function CreateDeck({ isnew, decks, singleDeck, setSingleDeck }) {
 
     handleSubmit = (event) => {
       event.preventDefault();
-      
+
       createDeck(formData)
-      .then(setFormData({ ...initialFormState }))
-      .then(setSingleDeck((origDeck) => {return {...origDeck, formData}}))
-      .then(({ id }) => history.push(`/decks/${id}`));
+        .then(setFormData({ ...initialFormState }))
+        .then(
+          setSingleDeck((origDeck) => {
+            return { ...origDeck, formData };
+          })
+        )
+        .then(({ id }) => history.push(`/decks/${id}`));
     };
   } else {
     if (singleDeck) {
@@ -66,13 +73,13 @@ function CreateDeck({ isnew, decks, singleDeck, setSingleDeck }) {
     }
     handleSubmit = (event) => {
       event.preventDefault();
-      singleDeck = {
+      let newDeck = {
         ...singleDeck,
         name: formData.name,
         description: formData.description,
       };
-      setFormData({ ...formData, name: "", description: "" });
-      updateDeck(singleDeck).then(({ id }) => history.push(`/decks/${id}`));
+
+      updateDeck(newDeck).then(({ id }) => history.push(`/decks/${id}`));
     };
   }
   return (
@@ -89,7 +96,7 @@ function CreateDeck({ isnew, decks, singleDeck, setSingleDeck }) {
           type="text"
           name="name"
           onChange={handleChange}
-          value={formData.name}
+          value={formData ? formData.name : "Loading.."}
           placeholder={placeholders.name}
         />
 
@@ -103,7 +110,7 @@ function CreateDeck({ isnew, decks, singleDeck, setSingleDeck }) {
           type="text"
           name="description"
           onChange={handleChange}
-          value={formData.description}
+          value={formData ? formData.description : "Loading.."}
           placeholder={placeholders.description}
         />
 

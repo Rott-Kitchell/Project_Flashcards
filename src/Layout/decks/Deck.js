@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
-import { useParams, useRouteMatch } from "react-router";
+import { useHistory, useParams, useRouteMatch } from "react-router";
 import { Link } from "react-router-dom";
-import { listCards, readDeck } from "../../utils/api";
+import { deleteCard, deleteDeck, listCards, readDeck } from "../../utils/api";
 
 function Deck({ cards, setCards, singleDeck, setSingleDeck }) {
+  const history = useHistory();
   const { deckId } = useParams();
   const { url } = useRouteMatch();
   useEffect(() => {
@@ -18,12 +19,26 @@ function Deck({ cards, setCards, singleDeck, setSingleDeck }) {
 
   useEffect(() => {
     const abortController = new AbortController();
-    listCards(deckId)
+    console.log(singleDeck.id);
+    listCards(singleDeck.id)
       .then(setCards)
       .catch((error) => console.log(error));
 
     return abortController.abort();
-  }, [deckId, setCards, setSingleDeck]);
+  }, [deckId, setCards, setSingleDeck, singleDeck.id]);
+  const handleDelete = (id, card) => {
+    if (card) {
+      let result = window.confirm(
+        "Delete this card? \n \n You will not be able to recover it."
+      );
+      if (result) deleteCard(id).then(history.go(0));
+    } else {
+      let result = window.confirm(
+        "Delete this deck? \n \n You will not be able to recover it."
+      );
+      if (result) deleteDeck(id).then(history.push("/"));
+    }
+  };
 
   const cardsListed = () => {
     if (cards) {
@@ -43,7 +58,13 @@ function Deck({ cards, setCards, singleDeck, setSingleDeck }) {
                   <i className="bi bi-pencil-square"></i> Edit
                 </Link>
 
-                <button className="btn btn-danger margin-bottom">
+                <button
+                  className="btn btn-danger margin-bottom"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleDelete(card.id, true);
+                  }}
+                >
                   <i className="bi bi-trash"></i>
                 </button>
               </div>
@@ -66,10 +87,16 @@ function Deck({ cards, setCards, singleDeck, setSingleDeck }) {
           <i className="bi bi-book"></i> Study
         </Link>
 
-        <Link to={`${url}cards/add`} className="btn btn-primary">
+        <Link to={`${url}/cards/new`} className="btn btn-primary">
           <i className="bi bi-plus-square"></i> Add Cards
         </Link>
-        <button className="btn btn-danger float-right margin-bottom">
+        <button
+          className="btn btn-danger float-right margin-bottom"
+          onClick={(e) => {
+            e.preventDefault();
+            handleDelete(singleDeck.id);
+          }}
+        >
           <i className="bi bi-trash"></i>
         </button>
       </div>

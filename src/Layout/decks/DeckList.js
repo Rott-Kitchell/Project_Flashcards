@@ -1,12 +1,26 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { deleteDeck } from "../../utils/api";
+import React, { useEffect } from "react";
+import { Link, useHistory } from "react-router-dom";
+import { deleteDeck, listDecks } from "../../utils/api";
 
-const DeckList = ({ setDecks, decks, setDeckNum }) => {
-  function HandleClick(event) {
-    event.preventDefault();
-    setDeckNum(parseInt(event.target.parentNode.parentNode.id));
-  }
+const DeckList = ({ setDecks, decks }) => {
+  const history = useHistory();
+
+  useEffect(() => {
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+
+    listDecks(signal)
+      .then(setDecks)
+      .catch((error) => console.log(error));
+
+    return () => abortController.abort();
+  }, [setDecks]);
+  const handleDelete = (id) => {
+    let result = window.confirm(
+      "Delete this deck? \n \n You will not be able to recover it."
+    );
+    if (result) deleteDeck(id).then(history.go(0));
+  };
 
   const decksListed = () => {
     if (decks) {
@@ -22,11 +36,7 @@ const DeckList = ({ setDecks, decks, setDeckNum }) => {
 
               <p className="card-text">{deck.description}</p>
 
-              <Link
-                
-                to={`decks/${deck.id}`}
-                className="btn btn-secondary mr-2"
-              >
+              <Link to={`decks/${deck.id}`} className="btn btn-secondary mr-2">
                 <i className="bi bi-eye"></i> View
               </Link>
               <Link
@@ -35,7 +45,13 @@ const DeckList = ({ setDecks, decks, setDeckNum }) => {
               >
                 <i className="bi bi-book"></i> Study
               </Link>
-              <button className="btn btn-danger float-right margin-bottom">
+              <button
+                className="btn btn-danger float-right margin-bottom"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleDelete(deck.id);
+                }}
+              >
                 <i className="bi bi-x-square"></i> Delete
               </button>
             </div>
