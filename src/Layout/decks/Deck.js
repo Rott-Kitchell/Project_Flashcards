@@ -19,7 +19,6 @@ function Deck({ cards, setCards, singleDeck, setSingleDeck }) {
 
   useEffect(() => {
     const abortController = new AbortController();
-    console.log(singleDeck.id);
     listCards(singleDeck.id)
       .then(setCards)
       .catch((error) => console.log(error));

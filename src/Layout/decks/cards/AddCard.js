@@ -69,7 +69,6 @@ function AddCard({ singleDeck, isnew, setSingleDeck }) {
     }
     handleSubmit = (event) => {
       event.preventDefault();
-      console.log(formData);
 
       updateCard(formData).then(history.push(`/decks/${params.deckId}`));
     };
